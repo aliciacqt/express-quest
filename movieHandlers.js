@@ -29,7 +29,7 @@ const movies = [
 
 const getMovies = (req, res) => {
   database
-    .query("select * from movies")
+    .query("SELECT * FROM movies")
     .then((result) => {
       const movies = result[0];
       res.json(movies);
@@ -44,7 +44,7 @@ const getMovieById = (req, res) => {
   const id = parseInt(req.params.id);
 
   database
-    .query("select * from movies where id = ?", [id])
+    .query("SELECT * FROM movies WHERE id = ?", [id])
     .then((result) => {
       const movie = result[0];
       if (movie != null) {
@@ -76,8 +76,31 @@ const postMovie = (req, res) => {
     });
 };
 
+const updateMovie = (req, res) => {
+  const id = parseInt(req.params.id);
+  const { title, director, year, color, duration } = req.body;
+
+  database
+    .query(
+      "UPDATE movies set title = ?, director = ?, year = ?, color = ?, duration = ? WHERE id = ?",
+      [title, director, year, color, duration, id]
+    )
+    .then(([result]) => {
+      if (result.affectedRows === 0) {
+        res.status(404).send("Not found");
+      } else {
+        res.sendStatus(204);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error editing the movie");
+    });
+};
+
 module.exports = {
   getMovies,
   getMovieById,
   postMovie,
+  updateMovie,
 };
