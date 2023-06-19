@@ -30,13 +30,15 @@ app.get("/api/users", userHandlers.getUsers);
 app.get("/api/users/:id", userHandlers.getUserById);
 app.post("/api/users", hashPassword, userHandlers.postUser);
 
-/* ------------ login ------------ */
+/* ------------ login and authentification wall ------------ */
 
 app.post(
   "/api/login",
   userHandlers.getUserByEmailWithPasswordAndPassToNext,
   verifyPassword
 );
+
+app.use(verifyToken);
 
 /* ------------ protected routes ------------ */
 
